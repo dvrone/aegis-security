@@ -4,9 +4,9 @@ Building open-source cybersecurity tools for everyone.
 
 ## Phase 1 — Foundation
 
-- [ ] Create GitHub repository
-- [ ] Design brand identity
-- [ ] Launch Telegram channel
+- [x] Create GitHub repository
+- [x] Design brand identity
+- [x] Launch Telegram channel
 - [ ] Build official website
 - [ ] User authentication
 - [ ] Dashboard
