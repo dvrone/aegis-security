@@ -6,11 +6,13 @@
         <title>{% block title %}Aegis Security{% endblock %}</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
               rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+              rel="stylesheet">
     </head>
     <body class="d-flex flex-column min-vh-100">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
-                <a class="navbar-brand" href="{% url 'home' %}">🛡️ Aegis Security</a>
+                <a class="navbar-brand" href="{% url 'home' %}"><i class="bi bi-shield-lock-fill"></i> Aegis Security</a>
                 <button class="navbar-toggler"
                         type="button"
                         data-bs-toggle="collapse"

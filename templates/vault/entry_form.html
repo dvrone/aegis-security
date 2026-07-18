@@ -1,40 +1,12 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 {% block title %}{{ action }} Entry — Aegis Security{% endblock %}
 {% block content %}
     <div class="container mt-5" style="max-width: 500px;">
         <h2>{{ action }} Vault Entry</h2>
         <form method="post" id="entry-form">
             {% csrf_token %}
-            {{ form.non_field_errors }}
-            {% for field in form %}
-                <div class="mb-3">
-                    {{ field.label_tag }}
-                    {{ field }}
-                    {% if field.name == "password" %}
-                        <div class="mt-2 d-flex gap-2 align-items-center">
-                            <input type="range"
-                                   min="8"
-                                   max="32"
-                                   value="16"
-                                   id="gen-length"
-                                   class="form-range"
-                                   style="max-width: 150px">
-                            <span id="gen-length-label">16</span>
-                            <button type="button" id="gen-btn" class="btn btn-sm btn-outline-secondary">🎲 Generate</button>
-                        </div>
-                        <div class="progress mt-2" style="height: 6px;">
-                            <div id="strength-bar"
-                                 class="progress-bar"
-                                 role="progressbar"
-                                 style="width: 0%"></div>
-                        </div>
-                        <small id="strength-label" class="text-muted"></small>
-                    {% endif %}
-                    {% if field.errors %}
-                        <div class="text-danger small">{{ field.errors }}</div>
-                    {% endif %}
-                </div>
-            {% endfor %}
+            {% crispy form %}
             <button type="submit" class="btn btn-primary">{{ action }}</button>
             <a href="{% url 'vault:entry_list' %}" class="btn btn-outline-secondary">Cancel</a>
         </form>
@@ -55,28 +27,23 @@ genBtn.addEventListener('click', async () => {
     const data = await res.json();
     if (data.password) {
         passwordField.value = data.password;
-        passwordField.type = 'text';  // briefly reveal so user sees what was generated
+        passwordField.type = 'text';
         setTimeout(() => { passwordField.type = 'password'; }, 2000);
     }
+    updateStrengthMeter();
 });
-    </script>
-    <script>
+
 function scorePassword(pw) {
     if (!pw) return { score: 0, label: "Empty", color: "secondary" };
-
     let charsetSize = 0;
     if (/[a-z]/.test(pw)) charsetSize += 26;
     if (/[A-Z]/.test(pw)) charsetSize += 26;
     if (/[0-9]/.test(pw)) charsetSize += 10;
     if (/[^a-zA-Z0-9]/.test(pw)) charsetSize += 32;
-
     const entropy = pw.length * Math.log2(charsetSize || 1);
-
-    // Common weak patterns knock down the score regardless of entropy
     const common = /^(123456|password|qwerty|letmein|admin|welcome|iloveyou)/i;
     const isCommonPattern = common.test(pw);
     const isRepetitive = /^(.)\1+$/.test(pw) || /^(012|123|234|345|abc|qwe)/i.test(pw);
-
     let score, label, color;
     if (isCommonPattern || isRepetitive || entropy < 28) {
         score = 1; label = "Weak"; color = "danger";
@@ -87,7 +54,6 @@ function scorePassword(pw) {
     } else {
         score = 4; label = "Very Strong"; color = "success";
     }
-
     return { score, label, color, entropy: Math.round(entropy) };
 }
 
@@ -103,6 +69,6 @@ function updateStrengthMeter() {
 }
 
 passwordField.addEventListener('input', updateStrengthMeter);
-updateStrengthMeter(); // run once in case editing an existing entry
+updateStrengthMeter();
     </script>
 {% endblock %}

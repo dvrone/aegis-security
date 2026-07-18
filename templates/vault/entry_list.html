@@ -3,8 +3,8 @@
 {% block content %}
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>🔐 My Vault</h1>
-            <a href="{% url 'vault:entry_create' %}" class="btn btn-primary">+ Add Entry</a>
+            <h1><i class="bi bi-lock-fill"></i> My Vault</h1>
+            <a href="{% url 'vault:entry_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Entry</a>
         </div>
         <form method="get" class="row g-2 mb-4">
             <div class="col-md-5">
@@ -31,7 +31,7 @@
                            id="fav-check"
                            class="form-check-input"
                            {% if favorites_only %}checked{% endif %}>
-                    <label for="fav-check" class="form-check-label">⭐ Favorites only</label>
+                    <label for="fav-check" class="form-check-label"><i class="bi bi-star-fill text-warning"></i> Favorites only</label>
                 </div>
             </div>
             <div class="col-md-2">
@@ -60,7 +60,9 @@
                     <tbody>
                         {% for entry in entries %}
                             <tr>
-                                <td>{% if entry.is_favorite %}⭐{% endif %}</td>
+                                <td>
+                                    {% if entry.is_favorite %}<i class="bi bi-star-fill text-warning"></i>{% endif %}
+                                </td>
                                 <td>
                                     {{ entry.title }}
                                     {% if entry.url %}
@@ -72,7 +74,9 @@
                                 <td><span class="badge bg-secondary">{{ entry.get_category_display }}</span></td>
                                 <td>
                                     <span class="password-mask" data-id="{{ entry.pk }}">••••••••</span>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary reveal-btn">👁</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary reveal-btn">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
                                 </td>
                                 <td>
                                     <a href="{% url 'vault:entry_edit' entry.pk %}"
