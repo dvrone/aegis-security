@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -10,7 +11,30 @@ from .utils import generate_password
 @login_required
 def entry_list(request):
     entries = VaultEntry.objects.filter(owner=request.user)
-    return render(request, "vault/entry_list.html", {"entries": entries})
+
+    query = request.GET.get("q", "").strip()
+    category = request.GET.get("category", "")
+    favorites_only = request.GET.get("favorites") == "1"
+
+    if query:
+        entries = entries.filter(
+            Q(title__icontains=query)
+            | Q(username__icontains=query)
+            | Q(url__icontains=query)
+        )
+    if category:
+        entries = entries.filter(category=category)
+    if favorites_only:
+        entries = entries.filter(is_favorite=True)
+
+    context = {
+        "entries": entries,
+        "query": query,
+        "selected_category": category,
+        "favorites_only": favorites_only,
+        "categories": VaultEntry.CATEGORY_CHOICES,
+    }
+    return render(request, "vault/entry_list.html", context)
 
 
 @login_required
