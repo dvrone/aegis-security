@@ -18,7 +18,7 @@ A secure password manager.
 ### Features
 - [x] Password storage
 - [x] Password generator
-- [ ] Password strength checker
+- [x] Password strength checker
 - [ ] Secure notes
 - [ ] Search
 - [ ] Categories
