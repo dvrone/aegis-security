@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Login — Aegis Security{% endblock %}
+{% block content %}
+    <div class="container mt-5" style="max-width: 400px;">
+        <h2>Log in</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary w-100">Log in</button>
+        </form>
+        <p class="mt-3">Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+    </div>
+{% endblock %}

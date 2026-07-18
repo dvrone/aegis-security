@@ -1,17 +1,16 @@
 {% extends "base.html" %}
 {% block title %}Aegis Security — Home{% endblock %}
 {% block content %}
-<div class="container mt-5">
-    <h1>Aegis Security</h1>
-    <p class="lead">Building open-source cybersecurity tools.</p>
-
-    <h2 class="mt-4">Planned Projects</h2>
-    <ul class="list-group">
-        {% for project in planned_projects %}
-        <li class="list-group-item">
-            <strong>{{ project.name }}</strong> — {{ project.description }}
-        </li>
-        {% endfor %}
-    </ul>
-</div>
+    <div class="container mt-5">
+        <h1>Aegis Security</h1>
+        <p class="lead">Building open-source cybersecurity tools.</p>
+        <h2 class="mt-4">Planned Projects</h2>
+        <ul class="list-group">
+            {% for project in planned_projects %}
+                <li class="list-group-item">
+                    <strong>{{ project.name }}</strong> — {{ project.description }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}
