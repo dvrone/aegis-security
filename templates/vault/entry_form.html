@@ -22,6 +22,13 @@
                             <span id="gen-length-label">16</span>
                             <button type="button" id="gen-btn" class="btn btn-sm btn-outline-secondary">🎲 Generate</button>
                         </div>
+                        <div class="progress mt-2" style="height: 6px;">
+                            <div id="strength-bar"
+                                 class="progress-bar"
+                                 role="progressbar"
+                                 style="width: 0%"></div>
+                        </div>
+                        <small id="strength-label" class="text-muted"></small>
                     {% endif %}
                     {% if field.errors %}
                         <div class="text-danger small">{{ field.errors }}</div>
@@ -52,5 +59,50 @@ genBtn.addEventListener('click', async () => {
         setTimeout(() => { passwordField.type = 'password'; }, 2000);
     }
 });
+    </script>
+    <script>
+function scorePassword(pw) {
+    if (!pw) return { score: 0, label: "Empty", color: "secondary" };
+
+    let charsetSize = 0;
+    if (/[a-z]/.test(pw)) charsetSize += 26;
+    if (/[A-Z]/.test(pw)) charsetSize += 26;
+    if (/[0-9]/.test(pw)) charsetSize += 10;
+    if (/[^a-zA-Z0-9]/.test(pw)) charsetSize += 32;
+
+    const entropy = pw.length * Math.log2(charsetSize || 1);
+
+    // Common weak patterns knock down the score regardless of entropy
+    const common = /^(123456|password|qwerty|letmein|admin|welcome|iloveyou)/i;
+    const isCommonPattern = common.test(pw);
+    const isRepetitive = /^(.)\1+$/.test(pw) || /^(012|123|234|345|abc|qwe)/i.test(pw);
+
+    let score, label, color;
+    if (isCommonPattern || isRepetitive || entropy < 28) {
+        score = 1; label = "Weak"; color = "danger";
+    } else if (entropy < 45) {
+        score = 2; label = "Fair"; color = "warning";
+    } else if (entropy < 65) {
+        score = 3; label = "Strong"; color = "success";
+    } else {
+        score = 4; label = "Very Strong"; color = "success";
+    }
+
+    return { score, label, color, entropy: Math.round(entropy) };
+}
+
+const strengthBar = document.getElementById('strength-bar');
+const strengthLabel = document.getElementById('strength-label');
+
+function updateStrengthMeter() {
+    const result = scorePassword(passwordField.value);
+    const percent = (result.score / 4) * 100;
+    strengthBar.style.width = percent + "%";
+    strengthBar.className = `progress-bar bg-${result.color}`;
+    strengthLabel.textContent = passwordField.value ? `${result.label} (~${result.entropy} bits entropy)` : "";
+}
+
+passwordField.addEventListener('input', updateStrengthMeter);
+updateStrengthMeter(); // run once in case editing an existing entry
     </script>
 {% endblock %}
