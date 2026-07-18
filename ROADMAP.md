@@ -3,13 +3,12 @@
 Building open-source cybersecurity tools for everyone.
 
 ## Phase 1 — Foundation
-
 - [x] Create GitHub repository
 - [x] Design brand identity
 - [x] Launch Telegram channel
-- [ ] Build official website
-- [ ] User authentication
-- [ ] Dashboard
+- [x] Build official website
+- [x] User authentication
+- [x] Dashboard
 - [ ] Project documentation
 
 ## Phase 2 — Aegis Vault
