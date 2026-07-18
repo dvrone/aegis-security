@@ -16,8 +16,7 @@ Building open-source cybersecurity tools for everyone.
 A secure password manager.
 
 ### Features
-
-- [ ] Password storage
+- [x] Password storage
 - [ ] Password generator
 - [ ] Password strength checker
 - [ ] Secure notes
