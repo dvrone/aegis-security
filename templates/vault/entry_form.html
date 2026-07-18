@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{{ action }} Entry — Aegis Security{% endblock %}
+{% block content %}
+    <div class="container mt-5" style="max-width: 500px;">
+        <h2>{{ action }} Vault Entry</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">{{ action }}</button>
+            <a href="{% url 'vault:entry_list' %}" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+    </div>
+{% endblock %}
