@@ -3,11 +3,54 @@
 {% block content %}
     <div class="container mt-5" style="max-width: 500px;">
         <h2>{{ action }} Vault Entry</h2>
-        <form method="post">
+        <form method="post" id="entry-form">
             {% csrf_token %}
-            {{ form.as_p }}
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                <div class="mb-3">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.name == "password" %}
+                        <div class="mt-2 d-flex gap-2 align-items-center">
+                            <input type="range"
+                                   min="8"
+                                   max="32"
+                                   value="16"
+                                   id="gen-length"
+                                   class="form-range"
+                                   style="max-width: 150px">
+                            <span id="gen-length-label">16</span>
+                            <button type="button" id="gen-btn" class="btn btn-sm btn-outline-secondary">🎲 Generate</button>
+                        </div>
+                    {% endif %}
+                    {% if field.errors %}
+                        <div class="text-danger small">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
             <button type="submit" class="btn btn-primary">{{ action }}</button>
             <a href="{% url 'vault:entry_list' %}" class="btn btn-outline-secondary">Cancel</a>
         </form>
     </div>
+    <script>
+const genBtn = document.getElementById('gen-btn');
+const lengthSlider = document.getElementById('gen-length');
+const lengthLabel = document.getElementById('gen-length-label');
+const passwordField = document.getElementById('id_password');
+
+lengthSlider.addEventListener('input', () => {
+    lengthLabel.textContent = lengthSlider.value;
+});
+
+genBtn.addEventListener('click', async () => {
+    const length = lengthSlider.value;
+    const res = await fetch(`{% url 'vault:generate_password' %}?length=${length}`);
+    const data = await res.json();
+    if (data.password) {
+        passwordField.value = data.password;
+        passwordField.type = 'text';  // briefly reveal so user sees what was generated
+        setTimeout(() => { passwordField.type = 'password'; }, 2000);
+    }
+});
+    </script>
 {% endblock %}

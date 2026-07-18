@@ -1,8 +1,10 @@
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import VaultEntryForm
 from .models import VaultEntry
+from .utils import generate_password
 
 
 @login_required
@@ -45,3 +47,23 @@ def entry_delete(request, pk):
         entry.delete()
         return redirect("vault:entry_list")
     return render(request, "vault/entry_confirm_delete.html", {"entry": entry})
+
+
+@login_required
+def generate_password_view(request):
+    length = int(request.GET.get("length", 16))
+    length = max(6, min(length, 64))  # clamp to a sane range
+
+    use_upper = request.GET.get("upper", "true") == "true"
+    use_lower = request.GET.get("lower", "true") == "true"
+    use_digits = request.GET.get("digits", "true") == "true"
+    use_symbols = request.GET.get("symbols", "true") == "true"
+
+    try:
+        password = generate_password(
+            length, use_upper, use_lower, use_digits, use_symbols
+        )
+    except ValueError as e:
+        return JsonResponse({"error": str(e)}, status=400)
+
+    return JsonResponse({"password": password})

@@ -9,4 +9,5 @@ urlpatterns = [
     path("add/", views.entry_create, name="entry_create"),
     path("<int:pk>/edit/", views.entry_edit, name="entry_edit"),
     path("<int:pk>/delete/", views.entry_delete, name="entry_delete"),
+    path("generate/", views.generate_password_view, name="generate_password"),
 ]
