@@ -20,9 +20,9 @@ A secure password manager.
 - [x] Password generator
 - [x] Password strength checker
 - [ ] Secure notes
-- [ ] Search
-- [ ] Categories
-- [ ] Favorites
+- [x] Search
+- [x] Categories
+- [x] Favorites
 - [ ] Import / Export
 - [ ] Browser support
 - [ ] Mobile support
