@@ -71,7 +71,7 @@
                                 <td>{{ entry.username|default:"—" }}</td>
                                 <td><span class="badge bg-secondary">{{ entry.get_category_display }}</span></td>
                                 <td>
-                                    <span class="password-mask" data-password="{{ entry.password }}">••••••••</span>
+                                    <span class="password-mask" data-id="{{ entry.pk }}">••••••••</span>
                                     <button type="button" class="btn btn-sm btn-outline-secondary reveal-btn">👁</button>
                                 </td>
                                 <td>
@@ -91,12 +91,32 @@
     </div>
     <script>
 document.querySelectorAll('.reveal-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
         const span = btn.previousElementSibling;
-        if (span.textContent === '••••••••') {
-            span.textContent = span.dataset.password;
-        } else {
+
+        if (span.textContent !== '••••••••') {
             span.textContent = '••••••••';
+            return;
+        }
+
+        const entryId = span.dataset.id;
+        btn.disabled = true;
+        try {
+            const res = await fetch(`/vault/${entryId}/reveal/`);
+            if (!res.ok) throw new Error('Failed to fetch password');
+            const data = await res.json();
+            span.textContent = data.password;
+
+            // auto-hide after 10 seconds so it doesn't stay exposed on screen indefinitely
+            setTimeout(() => {
+                if (span.textContent === data.password) {
+                    span.textContent = '••••••••';
+                }
+            }, 10000);
+        } catch (err) {
+            span.textContent = 'Error';
+        } finally {
+            btn.disabled = false;
         }
     });
 });

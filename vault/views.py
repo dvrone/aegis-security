@@ -91,3 +91,9 @@ def generate_password_view(request):
         return JsonResponse({"error": str(e)}, status=400)
 
     return JsonResponse({"password": password})
+
+
+@login_required
+def entry_reveal(request, pk):
+    entry = get_object_or_404(VaultEntry, pk=pk, owner=request.user)
+    return JsonResponse({"password": entry.password})
